@@ -42,8 +42,6 @@ namespace RazorEngineCore
         {
             return value == null ? string.Empty : HttpUtility.HtmlEncode(value);
         }
-        
-        
     }
 
    

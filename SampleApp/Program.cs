@@ -8,8 +8,7 @@ namespace SampleApp
     class Program
     {
         
-        static string Content = @"Hello @Model.Name";
-        /*static string Content = @"      
+        static string Content = @"      
 
 Hello @Model.Name
 
@@ -18,7 +17,7 @@ Hello @Model.Name
     <div>- @item</div>
 }
 
-<div data-name=""@Model.Name""></div>
+<div data-name=""@(Model.Name)""></div>
 
 @(""<div>encoded string</div>"")
 @Html.Encode(""<div>encoded string</div>"")
@@ -40,11 +39,10 @@ Hello @Model.Name
 		@{ RecursionTest(level - 1); }
 	}
 }
-";*/
+";
         
         static void Main(string[] args)
         {
-            //Microsoft.AspNetCore.Razor.Language.razorps
             //RazorPage
             //HtmlHelper x;
             //x.AntiForgeryToken()
@@ -67,8 +65,8 @@ Hello @Model.Name
                     }
                 }
             */
-            
-            string result = template.Run(model => model.Model = new
+
+            var model = (new
             {
                 Name = "Alexander",
                 Items = new List<string>()
@@ -76,7 +74,9 @@ Hello @Model.Name
                     "item 1",
                     "item 2"
                 }
-            });
+            }) as object;
+            
+            string result = template.Run(model: model);
 
             Console.WriteLine(result);
             Console.ReadKey();
