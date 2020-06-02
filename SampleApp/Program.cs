@@ -17,7 +17,9 @@ Hello @Model.Name
     <div>- @item</div>
 }
 
-<div data-name=""@(Model.Name)""></div>
+<div data-name=""@Html.AttributeEncode(Model.Attribute)""></div>
+
+<div data-name=""@(Model.Attribute)""></div>
 
 @(""<div>encoded string</div>"")
 @Html.Encode(""<div>encoded string</div>"")
@@ -51,7 +53,7 @@ Hello @Model.Name
             
             var template = razorEngine.Compile<RazorEngineCorePageModel>(Content, builder =>
             {
-                builder.AddAssemblyReference(typeof(Microsoft.AspNetCore.Html.IHtmlContent));
+                //builder.AddAssemblyReference(typeof(Microsoft.AspNetCore.Html.IHtmlContent));
             });
 
             /*
@@ -69,6 +71,7 @@ Hello @Model.Name
             var model = (new
             {
                 Name = "Alexander",
+                Attribute = "<encode me>",
                 Items = new List<string>()
                 {
                     "item 1",

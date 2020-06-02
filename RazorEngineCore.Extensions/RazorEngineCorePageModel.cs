@@ -2,8 +2,8 @@
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
+//using Microsoft.AspNetCore.Html;
+//using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
 namespace RazorEngineCore
 {
@@ -62,26 +62,27 @@ namespace RazorEngineCore
             var encoder = htmlEncoder;
             if (value is IHtmlContent htmlContent)
             {
-                var bufferedWriter = writer as ViewBufferTextWriter;
-                if (bufferedWriter == null || !bufferedWriter.IsBuffering)
-                {
+                //TODO: ViewBufferTextWriter is not currently supported.
+                //var bufferedWriter = writer as ViewBufferTextWriter;
+                //if (bufferedWriter == null || !bufferedWriter.IsBuffering)
+                //{
                     htmlContent.WriteTo(writer, encoder);
-                }
-                else
-                {
-                    if (value is IHtmlContentContainer htmlContentContainer)
-                    {
-                        // This is likely another ViewBuffer.
-                        htmlContentContainer.MoveTo(bufferedWriter.Buffer);
-                    }
-                    else
-                    {
-                        // Perf: This is the common case for IHtmlContent, ViewBufferTextWriter is inefficient
-                        // for writing character by character.
-                        // ReSharper disable once MustUseReturnValue
-                        bufferedWriter.Buffer.AppendHtml(htmlContent);
-                    }
-                }
+                //}
+                //else
+                //{
+                //    if (value is IHtmlContentContainer htmlContentContainer)
+                //    {
+                //        // This is likely another ViewBuffer.
+                //        htmlContentContainer.MoveTo(bufferedWriter.Buffer);
+                //    }
+                //    else
+                //    {
+                //        // Perf: This is the common case for IHtmlContent, ViewBufferTextWriter is inefficient
+                //        // for writing character by character.
+                //        // ReSharper disable once MustUseReturnValue
+                //        bufferedWriter.Buffer.AppendHtml(htmlContent);
+                //    }
+                //}
 
                 return;
             }

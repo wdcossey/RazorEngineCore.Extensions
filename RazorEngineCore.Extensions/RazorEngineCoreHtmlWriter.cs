@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Web;
-using Microsoft.AspNetCore.Html;
 
 // ReSharper disable MemberCanBePrivate.Global
 namespace RazorEngineCore
@@ -30,7 +29,7 @@ namespace RazorEngineCore
 
         public IHtmlContent Raw(object value)
         {
-            return new HtmlString(value?.ToString());
+            return Raw(value?.ToString());
         }
 
         public string Encode(string value)
