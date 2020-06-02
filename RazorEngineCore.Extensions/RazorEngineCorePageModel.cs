@@ -9,13 +9,14 @@ namespace RazorEngineCore
 {
     public abstract class RazorEngineCorePageModel : RazorEngineTemplateBase, IRazorEngineTemplate
     {
-        private readonly TextWriter output = new StringWriter();
+        private readonly TextWriter textWriter = new StringWriter();
 
-        private HtmlEncoder htmlEncoder => HtmlEncoder.Default;
+        private static HtmlEncoder HtmlEncoder => HtmlEncoder.Default;
+        
         private AttributeInfo _attributeInfo;
         
-        private string attributePrefix = null;
-        private string attributeSuffix = null;
+        //private string attributePrefix = null;
+        //private string attributeSuffix = null;
         
         public RazorEngineCoreHtmlWriter Html => new RazorEngineCoreHtmlWriter();
 
@@ -34,14 +35,14 @@ namespace RazorEngineCore
         {
             if (!string.IsNullOrEmpty(value))
             {
-                output.Write(value);
+                textWriter.Write(value);
             }
         }
         
         public virtual void Write(string value)
         {
-            var writer = output;
-            var encoder = htmlEncoder;
+            var writer = textWriter;
+            var encoder = HtmlEncoder;
             if (!string.IsNullOrEmpty(value))
             {
                 // Perf: Encode right away instead of writing it character-by-character.
@@ -58,8 +59,8 @@ namespace RazorEngineCore
                 return;
             }
 
-            var writer = output;
-            var encoder = htmlEncoder;
+            var writer = textWriter;
+            var encoder = HtmlEncoder;
             if (value is IHtmlContent htmlContent)
             {
                 //TODO: ViewBufferTextWriter is not currently supported.
@@ -171,7 +172,7 @@ namespace RazorEngineCore
 
         public new string Result()
         {
-            return this.output.ToString();
+            return this.textWriter.ToString();
         }
         
         private void WritePositionTaggedLiteral(string value, int position)
