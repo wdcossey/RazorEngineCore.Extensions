@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Razor;
 using RazorEngineCore;
 
 namespace SampleApp
@@ -21,10 +20,10 @@ Hello @Model.Name
 
 <div data-name=""@(Model.Attribute)""></div>
 
-@(""<div>encoded string</div>"")
-@Html.Encode(""<div>encoded string</div>"")
-@Html.AttributeEncode(""<div>encoded string</div>"")
-@Html.Raw(""<div>encoded string</div>"")
+@(""<div>string</div>"")
+@Html.Encode(""<div>string</div>"")
+@Html.AttributeEncode(""<div>string</div>"")
+@Html.Raw(""<div>string</div>"")
 
 <area>
     @{ RecursionTest(3); }
@@ -45,30 +44,11 @@ Hello @Model.Name
         
         static void Main(string[] args)
         {
-            //RazorPage
-            //HtmlHelper x;
-            //x.AntiForgeryToken()
-            
             RazorEngine razorEngine = new RazorEngine();
             
-            var template = razorEngine.Compile<RazorEngineCorePageModel>(Content, builder =>
-            {
-                //builder.AddAssemblyReference(typeof(Microsoft.AspNetCore.Html.IHtmlContent));
-            });
+            var template = razorEngine.Compile<RazorEngineCorePageModel>(Content);
 
-            /*
-                new
-                {
-                    Name = "Alexander",
-                    Items = new List<string>()
-                    {
-                        "item 1",
-                        "item 2"
-                    }
-                }
-            */
-
-            var model = (new
+            var model = new
             {
                 Name = "Alexander",
                 Attribute = "<encode me>",
@@ -77,7 +57,7 @@ Hello @Model.Name
                     "item 1",
                     "item 2"
                 }
-            }) as object;
+            };
             
             string result = template.Run(model: model);
 

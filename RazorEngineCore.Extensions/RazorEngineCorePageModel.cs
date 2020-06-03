@@ -2,24 +2,21 @@
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Html;
-//using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
 namespace RazorEngineCore
 {
     public abstract class RazorEngineCorePageModel : RazorEngineTemplateBase, IRazorEngineTemplate
     {
-        private readonly TextWriter textWriter = new StringWriter();
+        private readonly TextWriter _textWriter = new StringWriter();
 
-        private static HtmlEncoder HtmlEncoder => HtmlEncoder.Default;
+        // ReSharper disable once MemberCanBePrivate.Global
+        public HtmlEncoder HtmlEncoder => HtmlEncoder.Default;
         
         private AttributeInfo _attributeInfo;
         
-        //private string attributePrefix = null;
-        //private string attributeSuffix = null;
-        
         public RazorEngineCoreHtmlWriter Html => new RazorEngineCoreHtmlWriter();
 
+        // ReSharper disable once MemberCanBeProtected.Global
         public virtual void WriteLiteral(object value)
         {
             
@@ -28,20 +25,21 @@ namespace RazorEngineCore
                 return;
             }
 
-            WriteLiteral(value.ToString());
+            this.WriteLiteral(value.ToString());
         }
         
-        public new virtual void WriteLiteral(string value)
+        public new void WriteLiteral(string value = null)
         {
             if (!string.IsNullOrEmpty(value))
             {
-                textWriter.Write(value);
+                _textWriter.Write(value);
             }
         }
         
-        public virtual void Write(string value)
+        // ReSharper disable once MemberCanBePrivate.Global
+        public void Write(string value)
         {
-            var writer = textWriter;
+            var writer = _textWriter;
             var encoder = HtmlEncoder;
             if (!string.IsNullOrEmpty(value))
             {
@@ -59,7 +57,7 @@ namespace RazorEngineCore
                 return;
             }
 
-            var writer = textWriter;
+            var writer = _textWriter;
             var encoder = HtmlEncoder;
             if (value is IHtmlContent htmlContent)
             {
@@ -111,10 +109,6 @@ namespace RazorEngineCore
             {
                 WritePositionTaggedLiteral(prefix, prefixOffset);
             }
-            
-            //this.attributeSuffix = suffix;
-            //this.stringBuilder.Append(prefix);
-            //this.stringBuilder.Append(this.attributePrefix);
         }
 
         public override void WriteAttributeValue(string prefix, int prefixOffset, object value, int valueOffset, int valueLength, bool isLiteral)
@@ -154,15 +148,11 @@ namespace RazorEngineCore
 
                 EndContext();
             }
-            
-            //this.stringBuilder.Append(prefix);
-            //this.stringBuilder.Append(value);
         }
 
-        public new void EndWriteAttribute()
+        public override void EndWriteAttribute()
         {
-            //this.stringBuilder.Append(this.attributeSuffix);
-            //this.attributeSuffix = null;
+            
         }
 
         public override Task ExecuteAsync()
@@ -170,42 +160,23 @@ namespace RazorEngineCore
             return base.ExecuteAsync();
         }
 
-        public new string Result()
+        public override string Result()
         {
-            return this.textWriter.ToString();
+            return this._textWriter.ToString();
         }
         
-        private void WritePositionTaggedLiteral(string value, int position)
-        {
-            BeginContext(position, value.Length, isLiteral: true);
-            WriteLiteral(value);
-            EndContext();
-        }
-
+        // ReSharper disable once MemberCanBeProtected.Global
         public virtual void BeginContext(int position, int length, bool isLiteral)
         {
             
         }
 
+        // ReSharper disable once MemberCanBeProtected.Global
         public virtual void EndContext()
         {
             
         }
         
-        private bool IsBoolFalseOrNullValue(string prefix, object value)
-        {
-            return string.IsNullOrEmpty(prefix) &&
-                   (value == null ||
-                    (value is bool && !(bool)value));
-        }
-
-        private bool IsBoolTrueWithEmptyPrefixValue(string prefix, object value)
-        {
-            // If the value is just the bool 'true', use the attribute name as the value.
-            return string.IsNullOrEmpty(prefix) &&
-                   (value is bool && (bool)value);
-        }
-
         public virtual void EnsureRenderedBodyOrSections()
         {
             /*// a) all sections defined for this page are rendered.
@@ -241,6 +212,31 @@ namespace RazorEngineCore
             }*/
         }
         
+        #region Private
+        
+        private void WritePositionTaggedLiteral(string value, int position)
+        {
+            BeginContext(position, value.Length, isLiteral: true);
+            WriteLiteral(value);
+            EndContext();
+        }
+        
+        private static bool IsBoolFalseOrNullValue(string prefix, object value)
+        {
+            return string.IsNullOrEmpty(prefix) &&
+                   (value == null ||
+                    (value is bool b && !b));
+        }
+
+        private static bool IsBoolTrueWithEmptyPrefixValue(string prefix, object value)
+        {
+            // If the value is just the bool 'true', use the attribute name as the value.
+            return string.IsNullOrEmpty(prefix) &&
+                   (value is bool b && b);
+        }
+
+        #region WriteUnprefixedAttributeValue
+        
         private void WriteUnprefixedAttributeValue(object value, bool isLiteral)
         {
             var stringValue = value as string;
@@ -263,6 +259,10 @@ namespace RazorEngineCore
                 Write(value);
             }
         }
+        
+        #endregion
+
+        #region AttributeInfo
         
         private struct AttributeInfo
         {
@@ -298,5 +298,10 @@ namespace RazorEngineCore
 
             public bool Suppressed { get; set; }
         }
+        
+        #endregion
+        
+        #endregion
+
     }
 }

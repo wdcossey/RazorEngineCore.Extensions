@@ -8,7 +8,6 @@ namespace RazorEngineCore
 {
     public static class RazorEngineCompiledTemplateExtensions
     {
-        
         private const string TemplateType = "templateType";
 
         private static Type GetReflectedTemplateType(this object @object)
@@ -28,26 +27,28 @@ namespace RazorEngineCore
 
             return templateType;
         }
-        
-        private static Type GetReflectedTemplateType(this RazorEngineCompiledTemplate compiledTemplate)
-        {
-            return ((object)compiledTemplate).GetReflectedTemplateType();
-        }
-        
-        private static Type GetReflectedTemplateType<TTemplate>(this RazorEngineCompiledTemplate<TTemplate> compiledTemplate)
+
+        private static Type GetReflectedTemplateType<TTemplate>(
+            this RazorEngineCompiledTemplate<TTemplate> compiledTemplate)
             where TTemplate : IRazorEngineTemplate
         {
             return ((object)compiledTemplate).GetReflectedTemplateType();
         }
         
-        public static string Run<TTemplate>(this RazorEngineCompiledTemplate<TTemplate> compiledTemplate, object model = null)
-            where TTemplate : IRazorEngineTemplate
+        // ReSharper disable MemberCanBePrivate.Global
+        
+        public static string Run<TTemplate>(
+            this RazorEngineCompiledTemplate<TTemplate> compiledTemplate, 
+            object model = null)
+            where TTemplate : class, IRazorEngineTemplate
         {
             return compiledTemplate.RunAsync<TTemplate>(model).GetAwaiter().GetResult();
         }
-
-        public static async Task<string> RunAsync<TTemplate>(this RazorEngineCompiledTemplate<TTemplate> compiledTemplate, object model = null)
-            where TTemplate : IRazorEngineTemplate
+        
+        public static async Task<string> RunAsync<TTemplate>(
+            this RazorEngineCompiledTemplate<TTemplate> compiledTemplate, 
+            object model = null)
+            where TTemplate : class, IRazorEngineTemplate
         {
             if (model?.IsAnonymous() == true)
             {
@@ -62,17 +63,20 @@ namespace RazorEngineCore
             return instance.Result();
         }
         
-        public static string Run<TTemplate, TModel>(this RazorEngineCompiledTemplate<TTemplate> compiledTemplate,
-            TModel model = null)
+        public static string Run<TTemplate, TModel>(
+            this RazorEngineCompiledTemplate<TTemplate> compiledTemplate,
+            TModel model = default)
             where TModel : class
-            where TTemplate : IRazorEngineTemplate
+            where TTemplate : class, IRazorEngineTemplate
         {
             return compiledTemplate.RunAsync<TTemplate, TModel>(model).GetAwaiter().GetResult();
         }
 
-        public static async Task<string> RunAsync<TTemplate, TModel>(this RazorEngineCompiledTemplate<TTemplate> compiledTemplate, TModel model = null)
+        public static async Task<string> RunAsync<TTemplate, TModel>(
+            this RazorEngineCompiledTemplate<TTemplate> compiledTemplate, 
+            TModel model = default)
             where TModel : class
-            where TTemplate : IRazorEngineTemplate
+            where TTemplate : class, IRazorEngineTemplate
         {
 
             if (compiledTemplate == null)
@@ -107,5 +111,7 @@ namespace RazorEngineCore
 
             return instance.Result();
         }
+        
+        // ReSharper restore MemberCanBePrivate.Global
     }
 }

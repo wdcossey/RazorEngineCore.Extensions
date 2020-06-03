@@ -12,6 +12,7 @@ namespace RazorEngineCore
     /// </summary>
     public class RazorEngineCoreHtmlWriter
     { 
+        // ReSharper disable once MemberCanBeMadeStatic.Global
         public string AttributeEncode(string value)
         {
             return string.IsNullOrEmpty(value) ? string.Empty : HttpUtility.HtmlAttributeEncode(value);
@@ -22,6 +23,7 @@ namespace RazorEngineCore
             return this.AttributeEncode(Convert.ToString(value, CultureInfo.InvariantCulture));
         }
         
+        // ReSharper disable once MemberCanBeMadeStatic.Global
         public IHtmlContent Raw(string value)
         {
             return new HtmlString(value);
