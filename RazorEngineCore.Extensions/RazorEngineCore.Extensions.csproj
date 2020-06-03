@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>RazorEngineCore</RootNamespace>
+        <LangVersion>8</LangVersion>
+        <Title>RazorEngineCore.Extensions</Title>
+        <Authors>wdcossey</Authors>
+        <Description>Extensions for RazorEngineCore, including HTML safe encoding, limted @Html. support</Description>
+        <Copyright>William D Cossey</Copyright>
+        <PackageProjectUrl>https://github.com/wdcossey/RazorEngineCore.Extensions</PackageProjectUrl>
+        <PackageIconUrl>https://github.com/wdcossey/RazorEngineCore.Extensions/raw/master/Assets/razor.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/wdcossey/RazorEngineCore.Extensions</RepositoryUrl>
+        <PackageTags>RazorEngineCore, RazorEngine</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="RazorEngineCore" Version="(2020.5.1,)" />
+      <PackageReference Include="System.Text.Encodings.Web" Version="4.7.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\.submodules\RazorEngineCore\RazorEngineCore\RazorEngineCore.csproj" />
+    </ItemGroup>
+
+</Project>
