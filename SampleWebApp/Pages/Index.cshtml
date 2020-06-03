@@ -1,0 +1,25 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<code>
+    @("<div>string</div>")    
+</code>
+
+<code>
+    @Html.Encode("<div>string</div>")    
+</code>
+
+<code>
+    @*@Html.AttributeEncode("<div>string</div>")*@
+</code>
+
+<code>
+    @Html.Raw("<div>string</div>")    
+</code>
+
+<code>
+    @Json.Serialize(new { Title = "My Title", Description = "This is a description" })
+</code>
