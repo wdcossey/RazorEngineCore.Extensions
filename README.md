@@ -1,3 +1,5 @@
+![Logo](https://github.com/wdcossey/RazorEngineCore.Extensions/raw/master/Assets/razor.png)
+
 # RazorEngineCore.Extensions
 Extensions for RazorEngineCore (ASP.NET Core 3.1.1 Razor Template Engine)
 
@@ -6,7 +8,7 @@ Extensions for RazorEngineCore (ASP.NET Core 3.1.1 Razor Template Engine)
 
 HTML (safe) encoded output by *default* using `RazorEngineCorePageModel` or `RazorEngineCorePageModel<T>`.
 
-___
+---
 
 Support for (some) `@Html` tags with custom `RazorEngineCoreHtmlWriter` (to reduce external dependencies)
 ```
@@ -26,7 +28,7 @@ out: <div>string</div>
 Using the default `RazorEngineTemplateBase` with `@Html` will result in an exception 
 `The name 'Html' does not exist in the current context`.
 
-___
+---
 
 ### Extension Methods
 
@@ -34,6 +36,7 @@ For **RazorEngine**
 ```
 CompileFromFile(string fileName, ...)
 CompileFromFileAsync(string fileName, ...)
+CompileFromStream(StreamReader streamReader, ...)
 CompileFromStreamAsync(StreamReader streamReader, ...)
 ```
 
