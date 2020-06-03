@@ -37,7 +37,8 @@ namespace RazorEngineCore
             Action<RazorEngineCompilationOptionsBuilder> builderAction = null) 
             where T : class, IRazorEngineTemplate
         {
-            return razorEngine.CompileFromStreamAsync<T>(streamReader: GetFileStream(fileName), builderAction: builderAction);
+            using var streamReader = GetFileStream(fileName);
+            return razorEngine.CompileFromStreamAsync<T>(streamReader: streamReader, builderAction: builderAction);
         }
         
         /// <summary>
@@ -95,7 +96,8 @@ namespace RazorEngineCore
         /// <returns></returns>
         public static Task<RazorEngineCompiledTemplate> CompileFromFileAsync(this RazorEngine razorEngine, string fileName, Action<RazorEngineCompilationOptionsBuilder> builderAction = null)
         {
-            return razorEngine.CompileFromStreamAsync(streamReader: GetFileStream(fileName), builderAction: builderAction);
+            using var streamReader = GetFileStream(fileName);
+            return razorEngine.CompileFromStreamAsync(streamReader: streamReader, builderAction: builderAction);
         }
 
         /// <summary>
