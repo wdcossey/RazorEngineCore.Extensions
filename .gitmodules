@@ -1,4 +1,4 @@
 [submodule ".submodules/RazorEngineCore"]
 	path = .submodules/RazorEngineCore
-	url = https://github.com/adoconnection/RazorEngineCore.git
+	url = https://github.com/wdcossey/RazorEngineCore.git
 	branch = master
