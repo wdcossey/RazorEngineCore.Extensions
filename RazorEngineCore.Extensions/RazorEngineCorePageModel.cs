@@ -8,13 +8,17 @@ namespace RazorEngineCore
     public abstract class RazorEngineCorePageModel : RazorEngineTemplateBase, IRazorEngineTemplate
     {
         private readonly TextWriter _textWriter = new StringWriter();
+        
+        private AttributeInfo _attributeInfo;
 
         // ReSharper disable once MemberCanBePrivate.Global
         public HtmlEncoder HtmlEncoder => HtmlEncoder.Default;
         
-        private AttributeInfo _attributeInfo;
+        // ReSharper disable once UnusedMember.Global
+        public RazorEngineCoreHtmlWriter Html { get; } = new RazorEngineCoreHtmlWriter();
         
-        public RazorEngineCoreHtmlWriter Html => new RazorEngineCoreHtmlWriter();
+        // ReSharper disable once UnusedMember.Global
+        public RazorEngineCoreJsonWriter Json { get; } = new RazorEngineCoreJsonWriter();
 
         // ReSharper disable once MemberCanBeProtected.Global
         public virtual void WriteLiteral(object value)

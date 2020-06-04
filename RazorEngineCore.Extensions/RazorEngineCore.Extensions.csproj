@@ -17,6 +17,7 @@
     <ItemGroup>
       <PackageReference Include="RazorEngineCore" Version="(2020.5.1,)" />
       <PackageReference Include="System.Text.Encodings.Web" Version="4.7.1" />
+      <PackageReference Include="System.Text.Json" Version="4.7.2" />
     </ItemGroup>
 
     <ItemGroup>

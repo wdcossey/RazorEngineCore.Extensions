@@ -9,6 +9,11 @@ namespace SampleApp
         
         static string Content = @"      
 
+@{
+    Json.WriteIndented(true)
+        .IgnoreNullValues(true);
+}
+
 Hello @Model.Name
 
 @foreach(var item in @Model.Items)
@@ -25,6 +30,10 @@ Hello @Model.Name
 @Html.AttributeEncode(""<div>string</div>"")
 @Html.Raw(""<div>string</div>"")
 
+<code>
+@Json.Serialize(new { Title = ""My Title"", Description = ""This is a description"", Null = (object)null })
+</code>
+        
 <area>
     @{ RecursionTest(3); }
 </area>
