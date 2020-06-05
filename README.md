@@ -1,7 +1,7 @@
 ![Logo](https://github.com/wdcossey/RazorEngineCore.Extensions/raw/master/Assets/razor.png)
 
-# RazorEngineCore.Extensions
-Extensions for RazorEngineCore (ASP.NET Core 3.1.1 Razor Template Engine)
+# [RazorEngineCore](https://github.com/adoconnection/RazorEngineCore).Extensions
+Extensions for [RazorEngineCore](https://github.com/adoconnection/RazorEngineCore) (ASP.NET Core 3.1.1 Razor Template Engine)
 
 [![Build status](https://dev.azure.com/wdcossey/GitHub/_apis/build/status/RazorEngineCore-Extensions-CI?branchName=master)](https://dev.azure.com/wdcossey/GitHub/_build/latest?definitionId=1)
 [![Build status](https://badgen.net/nuget/v/RazorEngineCore.Extensions?icon=nuget)](https://www.nuget.org/packages/RazorEngineCore.Extensions/)
