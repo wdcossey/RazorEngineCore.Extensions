@@ -33,7 +33,7 @@ Using the default `RazorEngineTemplateBase` with `@Html` will result in an excep
 ### Extension Methods
 
 For **RazorEngine**
-```
+```cs
 CompileFromFile(string fileName, ...)
 CompileFromFileAsync(string fileName, ...)
 CompileFromStream(StreamReader streamReader, ...)
@@ -43,7 +43,7 @@ CompileFromStreamAsync(StreamReader streamReader, ...)
 For **RazorEngineCompiledTemplate<>**
 
 These enable direct Model usage w/o the need for the RazorEngineTemplateBase (PageModel) instance.
-```
+```cs
 Run(object model = null)
 RunAsync(object model = null)
 Run<TModel>(TModel model = null)
