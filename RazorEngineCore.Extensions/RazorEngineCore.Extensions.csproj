@@ -20,8 +20,4 @@
       <PackageReference Include="System.Text.Json" Version="4.7.2" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\.submodules\RazorEngineCore\RazorEngineCore\RazorEngineCore.csproj" />
-    </ItemGroup>
-
 </Project>
