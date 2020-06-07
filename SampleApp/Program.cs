@@ -6,8 +6,14 @@ namespace SampleApp
 {
     class Program
     {
-        
         static string Content = @"      
+
+@{
+    var jsonObject = new { Title = ""My Title"", Description = ""This is a description"", Null = (object)null };
+
+    Json.WriteIndented(true)
+        .IgnoreNullValues(true);
+}
 
 Hello @Model.Name
 
@@ -20,10 +26,49 @@ Hello @Model.Name
 
 <div data-name=""@(Model.Attribute)""></div>
 
-@(""<div>string</div>"")
-@Html.Encode(""<div>string</div>"")
-@Html.AttributeEncode(""<div>string</div>"")
-@Html.Raw(""<div>string</div>"")
+<div style=""margin: 16px"">
+    @@()
+    <code style=""display: block"">
+        @(""<div>string</div>"")    
+    </code>
+</div>
+
+<div style=""margin: 16px"">
+    @@Html.Encode()
+    <code style=""display: block"">
+        @Html.Encode(""<div>string</div>"")    
+    </code>
+</div>
+
+<div style=""margin: 16px"">
+    @@Html.AttributeEncode()
+    <code style=""display: block"">
+        @Html.AttributeEncode(""<div>string</div>"")
+    </code>
+</div>
+
+<div style=""margin: 16px"">
+    @@Html.Raw()
+    <code style=""display: block"">
+        @Html.Raw(""<div>string</div>"")    
+    </code>
+</div>
+
+<div style=""margin: 16px"">
+    @@Json.Serialize()
+    <code style=""display: block"">
+        @Json.Serialize(jsonObject)
+    </code>
+</div>
+
+<div style=""margin: 16px"">
+    @@Json.Serialize()
+    <code style=""display: block"">
+        @Json.Serialize(jsonObject, 
+            writeIndented: false,
+            ignoreNullValues: false)
+    </code>
+</div>
 
 <area>
     @{ RecursionTest(3); }

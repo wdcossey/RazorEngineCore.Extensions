@@ -1,25 +1,40 @@
 ﻿@page
 @model IndexModel
+
 @{
     ViewData["Title"] = "Home page";
 }
 
-<code>
-    @("<div>string</div>")    
-</code>
+<div style="margin: 16px">
+    @@()
+    <code style="display: block">
+        @("<div>string</div>")    
+    </code>
+</div>
 
-<code>
-    @Html.Encode("<div>string</div>")    
-</code>
+<div style="margin: 16px">
+    @@Html.Encode()
+    <code style="display: block">
+        @Html.Encode("<div>string</div>")    
+    </code>
+</div>
 
-<code>
-    @*@Html.AttributeEncode("<div>string</div>")*@
-</code>
+<div style="margin: 16px">
+    <code style="display: block">
+        @*@Html.AttributeEncode("<div>string</div>")*@
+    </code>
+</div>
 
-<code>
-    @Html.Raw("<div>string</div>")    
-</code>
+<div style="margin: 16px">
+    @@Html.Raw()
+    <code style="display: block">
+        @Html.Raw("<div>string</div>")    
+    </code>
+</div>
 
-<code>
-    @Json.Serialize(new { Title = "My Title", Description = "This is a description" })
-</code>
+<div style="margin: 16px">
+    @@Json.Serialize()
+    <code style="display: block">
+        @Json.Serialize(new { Title = "My Title", Description = "This is a description" })
+    </code>
+</div>

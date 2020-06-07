@@ -7,7 +7,7 @@ namespace RazorEngineCore
 {
     /// <summary>
     /// Lightweight implementation of the IHtmlHelper from ASP.Net Core.
-    /// The purpose of this file is to allow use of some @Html. tags in RazorEngineCore.
+    /// The purpose of this file is to allow use of some @Html tags in RazorEngineCore.
     /// i.e. @Html.Raw(), @Html.AttributeEncode(), @Html.Encode(), etc.
     /// </summary>
     public class RazorEngineCoreHtmlWriter
@@ -20,7 +20,7 @@ namespace RazorEngineCore
         
         public string AttributeEncode(object value)
         {
-            return this.AttributeEncode(Convert.ToString(value, CultureInfo.InvariantCulture));
+            return AttributeEncode(value?.ToString());
         }
         
         // ReSharper disable once MemberCanBeMadeStatic.Global
@@ -34,6 +34,7 @@ namespace RazorEngineCore
             return Raw(value?.ToString());
         }
 
+        // ReSharper disable once MemberCanBeMadeStatic.Global
         public string Encode(string value)
         {
             return string.IsNullOrEmpty(value) ? string.Empty : HttpUtility.HtmlEncode(value);
@@ -41,7 +42,7 @@ namespace RazorEngineCore
         
         public string Encode(object value)
         {
-            return value == null ? string.Empty : HttpUtility.HtmlEncode(value);
+            return Encode(value?.ToString());
         }
     }
 
