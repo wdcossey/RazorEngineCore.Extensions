@@ -54,8 +54,6 @@ RunAsync<TModel>(TModel model = null)
 
 ### Coming Soon
 
-* Wiki.
-* `@Json.Serialize(...)` tag support via a custom `RazorEngineCoreJsonWriter` (using `System.Text.Json`).
 * Aditional `@Html` tags.
 * Unit Tests.
 * And more...
