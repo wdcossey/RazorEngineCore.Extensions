@@ -1,16 +1,11 @@
-﻿using System;
-using System.Globalization;
-using System.Web;
+﻿using System.Web;
+using RazorEngineCore.Writers.Interfaces;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace RazorEngineCore
+namespace RazorEngineCore.Writers
 {
-    /// <summary>
-    /// Lightweight implementation of the IHtmlHelper from ASP.Net Core.
-    /// The purpose of this file is to allow use of some @Html tags in RazorEngineCore.
-    /// i.e. @Html.Raw(), @Html.AttributeEncode(), @Html.Encode(), etc.
-    /// </summary>
-    public class RazorEngineCoreHtmlWriter
+    /// <inheritdoc cref="IHtmlWriter"/>
+    public class HtmlWriter : IHtmlWriter
     { 
         // ReSharper disable once MemberCanBeMadeStatic.Global
         public string AttributeEncode(string value)

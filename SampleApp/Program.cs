@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using RazorEngineCore;
 
 namespace SampleApp
@@ -87,11 +88,11 @@ Hello @Model.Name
 }
 ";
         
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             RazorEngine razorEngine = new RazorEngine();
             
-            var template = razorEngine.Compile<RazorEngineCorePageModel>(Content);
+            var template = await razorEngine.CompileAsync<RazorEngineCorePageModel>(Content);
 
             var model = new
             {
@@ -104,7 +105,7 @@ Hello @Model.Name
                 }
             };
             
-            string result = template.Run(model: model);
+            string result = await template.RunAsync(model: model);
 
             Console.WriteLine(result);
             Console.ReadKey();

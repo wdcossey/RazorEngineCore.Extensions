@@ -1,20 +1,17 @@
-﻿using System;
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
 using System.Text.Json;
+using RazorEngineCore.Writers.Interfaces;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace RazorEngineCore
+namespace RazorEngineCore.Writers
 {
-    /// <summary>
-    /// Lightweight implementation of the IJsonHelper from ASP.Net Core.
-    /// The purpose of this file is to allow use of @Json tags in RazorEngineCore.
-    /// </summary>
-    public class RazorEngineCoreJsonWriter
+    /// <inheritdoc cref="IJsonWriter"/>
+    public class JsonWriter : IJsonWriter
     {
-        internal const int BufferSizeDefault = 16 * 1024;
-        internal const int DefaultMaxDepth = 64;
+        private const int BufferSizeDefault = 16 * 1024;
+        private const int DefaultMaxDepth = 64;
         
-        private JsonSerializerOptions GlobalSerializerOptions { get; } = new JsonSerializerOptions()
+        internal JsonSerializerOptions GlobalSerializerOptions { get; } = new JsonSerializerOptions()
         {
             Encoder = JavaScriptEncoder.Default
         };
@@ -66,43 +63,43 @@ namespace RazorEngineCore
             return Serialize(value, serializerOptions);
         }
 
-        public RazorEngineCoreJsonWriter WriteIndented(bool value)
+        public IJsonWriter WriteIndented(bool value)
         {
             GlobalSerializerOptions.WriteIndented = value;
             return this;
         }
 
-        public RazorEngineCoreJsonWriter IgnoreNullValues(bool value)
+        public IJsonWriter IgnoreNullValues(bool value)
         {
             GlobalSerializerOptions.IgnoreNullValues = value;
             return this;
         }
 
-        public RazorEngineCoreJsonWriter MaxDepth(int value)
+        public IJsonWriter MaxDepth(int value)
         {
             GlobalSerializerOptions.MaxDepth = SafeMaxDepth(value);
             return this;
         }
 
-        public RazorEngineCoreJsonWriter AllowTrailingCommas(bool value)
+        public IJsonWriter AllowTrailingCommas(bool value)
         {
             GlobalSerializerOptions.AllowTrailingCommas = value;
             return this;
         }
 
-        public RazorEngineCoreJsonWriter IgnoreReadOnlyProperties(bool value)
+        public IJsonWriter IgnoreReadOnlyProperties(bool value)
         {
             GlobalSerializerOptions.IgnoreReadOnlyProperties = value;
             return this;
         }
         
-        public RazorEngineCoreJsonWriter PropertyNameCaseInsensitive(bool value)
+        public IJsonWriter PropertyNameCaseInsensitive(bool value)
         {
             GlobalSerializerOptions.PropertyNameCaseInsensitive = value;
             return this;
         }
         
-        public RazorEngineCoreJsonWriter DefaultBufferSize(int value)
+        public IJsonWriter DefaultBufferSize(int value)
         {
             GlobalSerializerOptions.DefaultBufferSize = SafeBufferSize(value);
             return this;
