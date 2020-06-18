@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -9,4 +9,37 @@
       <ProjectReference Include="..\RazorEngineCore.Extensions\RazorEngineCore.Extensions.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="GreetingTasks" Version="0.1.0-build20200618-1841" />
+    </ItemGroup>
+
+    <!--<UsingTask TaskName="HandleAssemblyResolve" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildBinPath)\Microsoft.Build.Tasks.Core.dll">
+    <UsingTask TaskName="RazorEngineCore.SimpleTask" AssemblyFile="$(TargetDir)RazorEngineCore.Extensions.dll">
+    </UsingTask>
+
+    <Target Name="RazorEngineCoreAfterBuild" AfterTargets="Build">
+        <RazorEngineCore.SimpleTask ExtensionsAssembly="RazorEngineCore.Extensions.dll" TargetDir="$(TargetDir)" TargetFileName="$(TargetFileName)" />
+    </Target>-->
+
+    
+<!--    <Target Name="Thank" AfterTargets="Build">
+        <SayThankYou />
+    </Target>
+    
+    <Target Name="RazorEngineCoreAfterBuild" AfterTargets="Build">
+      <SimpleTask ExtensionsAssembly="RazorEngineCore.Extensions.dll" TargetDir="$(TargetDir)" TargetFileName="$(TargetFileName)" />
+    </Target>-->
+    
+    <Target Name="HelloWorld" BeforeTargets="Build">
+        <Message Text="Compile item type contains @(Compile, '%0A%0D')" />
+    </Target>
+
+    <Target Name="GenerateSomeFiles" BeforeTargets="BeforeBuild">
+        <Message Text="Compile item type contains @(Compile, '%0A%0D')" />
+        <ItemGroup>
+            <Compile Include="**/*$(DefaultLanguageSourceExtension)"
+                     Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(BaseIntermediateOutputPath)**;$(BaseOutputPath)**;@(Compile)" />
+        </ItemGroup>
+    </Target>
+    
 </Project>

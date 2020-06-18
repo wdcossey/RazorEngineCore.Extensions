@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using RazorEngineCore;
 
+[assembly: PrecompiledTemplate(typeof(RazorEngineCorePageModel), SampleApp.Content.SampleContent)]
+//RazorEngineCorePageModel
+
 namespace SampleApp
 {
-    class Program
+
+    public static class Content
     {
-        static string Content = @"      
+        public const string SampleContent = @"      
 
 @{
     var jsonObject = new { Title = ""My Title"", Description = ""This is a description"", Null = (object)null };
@@ -15,6 +22,8 @@ namespace SampleApp
     Json.WriteIndented(true)
         .IgnoreNullValues(true);
 }
+
+@RenderBody(Model)
 
 Hello @Model.Name
 
@@ -87,12 +96,52 @@ Hello @Model.Name
 	}
 }
 ";
+    }
+
+    public class Program
+    {
+        
+        
         
         static async Task Main(string[] args)
         {
-            RazorEngine razorEngine = new RazorEngine();
+
+            var dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             
-            var template = await razorEngine.CompileAsync<RazorEngineCorePageModel>(Content);
+            
+            var assEx = Assembly.LoadFile($"{dir}{Path.DirectorySeparatorChar}RazorEngineCore.Extensions.dll");
+            var ass = Assembly.LoadFile($"{dir}{Path.DirectorySeparatorChar}RazorEngineCore.dll");
+
+            ass.GetCustomAttributes<RazorEngineCore.PrecompiledTemplate>();
+            
+            var type = ass.GetType("RazorEngineCore.RazorEngine");
+            var templateType = ass.GetType("RazorEngineCore.RazorEngineCompiledTemplate");
+            
+            var instance = Activator.CreateInstance(type);
+
+            //var method = instance.GetType().GetMethods().Single(w => w.IsGenericMethod && w.Name.Equals("CompileAsync"));//.MakeGenericMethod(typeof(RazorEngineCore.RazorEngineCorePageModel));
+            var method = type.GetMethods().Single(w => w.IsGenericMethod && w.Name.Equals("Compile"));//.MakeGenericMethod(typeof(RazorEngineCore.RazorEngineCorePageModel));
+
+            var tempType = typeof(RazorEngineCorePageModel);
+            
+            var genericArgument = method.GetGenericArguments().FirstOrDefault();
+            if (genericArgument != null)
+            {
+                Type newType = tempType.MakeGenericType(genericArgument);
+                
+                method = method.MakeGenericMethod(templateType);
+            }
+            
+            //var method = instance.GetType().GetMethod($"CompileAsync<RazorEngineCore.RazorEngineCorePageModel>").MakeGenericMethod(typeof(RazorEngineCore.RazorEngineCorePageModel));
+
+
+            var x = method.Invoke(instance, new object[] {"Content.SampleContent", null});// as Task);
+                
+            RazorEngineCore.RazorEngine razorEngine = new RazorEngineCore.RazorEngine();
+            
+            var template = razorEngine.Compile<RazorEngineCorePageModel>(Content.SampleContent);
+            
+            //var template = await razorEngine.CompileAsync<RazorEngineCorePageModel>(Content.SampleContent);
 
             var model = new
             {

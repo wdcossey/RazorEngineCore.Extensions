@@ -7,12 +7,14 @@ using RazorEngineCore.Writers.Interfaces;
 
 namespace RazorEngineCore
 {
-    public class RazorEngineCorePageModel : RazorEngineTemplateBase, IRazorEngineTemplate
+    public abstract class RazorEngineCorePageModel : RazorEngineTemplateBase, IRazorEngineTemplate
     {
         // ReSharper disable MemberCanBeMadeStatic.Global
         // ReSharper disable MemberCanBePrivate.Global
         // ReSharper disable MemberCanBeProtected.Global
         // ReSharper disable UnusedMember.Global
+        
+        public IHtmlContent BodyContent { get; set; }
         
         private readonly TextWriter _textWriter = new StringWriter();
         
@@ -61,7 +63,7 @@ namespace RazorEngineCore
             {
                 return;
             }
-
+            
             var writer = _textWriter;
             var encoder = HtmlEncoder;
             if (value is IHtmlContent htmlContent)
@@ -92,6 +94,24 @@ namespace RazorEngineCore
             }
 
             Write(value.ToString());
+        }
+
+        protected virtual IHtmlContent RenderBody(object model)
+        {
+            if (BodyContent == null)
+            {
+                var engine = new RazorEngine();
+                var template = engine.Compile<RazorEngineCorePageModel>("@Model.Name");
+                
+                BodyContent = new HtmlString(template.RunAsync(model).Result);
+                
+                //var message = Resources.FormatRazorPage_MethodCannotBeCalled(nameof(RenderBody), Path);
+                //throw new InvalidOperationException(message);
+            }
+
+            //_renderedBody = true;
+            return BodyContent;
+            
         }
         
         public override void BeginWriteAttribute(string name, string prefix, int prefixOffset, string suffix, int suffixOffset, int attributeValuesCount)
