@@ -46,7 +46,7 @@ namespace RazorEngineCore.Precompiler
                     continue;
                 }
                 
-                var attributes = assembly.GetCustomAttributes<RazorEngineCore.PrecompiledTemplateAttribute>()?.ToList();
+                var attributes = assembly.GetCustomAttributes<PrecompiledTemplateAttribute>()?.ToList();
 
                 if (!attributes?.Any() == true)
                     continue;
