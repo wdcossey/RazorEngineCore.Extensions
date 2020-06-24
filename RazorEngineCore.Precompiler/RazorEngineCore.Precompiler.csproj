@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <!-- Suppresses the warnings about the package not having assemblies in lib/*/.dll.-->
+        <NoPackageAnalysis>true</NoPackageAnalysis>
+        <!-- Change the default location where NuGet will put the build output -->
+        <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
+        <LangVersion>default</LangVersion>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+        <Title>RazorEngineCore.Precompiler</Title>
+        <Authors>wdcossey</Authors>
+        <Description>Template pre-compiler for RazorEngineCore</Description>
+        <Copyright>William D Cossey</Copyright>
+        <PackageProjectUrl>https://github.com/wdcossey/RazorEngineCore.Extensions</PackageProjectUrl>
+        <PackageIconUrl>https://github.com/wdcossey/RazorEngineCore.Extensions/raw/master/Assets/razor.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/wdcossey/RazorEngineCore.Extensions</RepositoryUrl>
+        <PackageTags>RazorEngineCore, RazorEngine</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\RazorEngineCore.Extensions\RazorEngineCore.Extensions.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Update="@(PackageReference)" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="buildMultiTargeting\RazorEngineCore.Precompiler.props">
+            <PackagePath>buildMultiTargeting\</PackagePath>
+        </Content>
+        <Content Include="build\RazorEngineCore.Precompiler.props">
+            <PackagePath>build\</PackagePath>
+        </Content>
+        <Content Include="$(TargetDir)\*" >
+            <PackagePath>tasks\netcoreapp3.1\</PackagePath>
+        </Content>
+    </ItemGroup>
+
+</Project>
