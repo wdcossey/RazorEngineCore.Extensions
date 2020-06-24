@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using RazorEngineCore;
+
+[assembly: PrecompiledTemplate("sample", typeof(RazorEngineCorePageModel), SampleApp.Content.SampleContent)]
 
 namespace SampleApp
 {
-    class Program
+
+    public static class Content
     {
-        static string Content = @"      
+        public const string SampleContent = @"      
 
 @{
     var jsonObject = new { Title = ""My Title"", Description = ""This is a description"", Null = (object)null };
@@ -14,6 +19,8 @@ namespace SampleApp
     Json.WriteIndented(true)
         .IgnoreNullValues(true);
 }
+
+@RenderBody(Model)
 
 Hello @Model.Name
 
@@ -86,27 +93,70 @@ Hello @Model.Name
 	}
 }
 ";
-        
-        static void Main(string[] args)
+    }
+
+    public class Program
+    {
+        static async Task Main(string[] args)
         {
+
             RazorEngine razorEngine = new RazorEngine();
-            
-            var template = razorEngine.Compile<RazorEngineCorePageModel>(Content);
 
-            var model = new
+            //Warm up CSharpCompilation, ensure fairness when doing a Stopwatch comparison
+            var mocktemplate =
+                await razorEngine.CompileAsync<RazorEngineCorePageModel>("");
+
+            var runs = 10;
+            
+            var compileResults = TimeSpan.Zero;
+            var precompileResults = TimeSpan.Zero;
+            
+            for (int i = 0; i < runs; i++)
             {
-                Name = "Alexander",
-                Attribute = "<encode me>",
-                Items = new List<string>()
-                {
-                    "item 1",
-                    "item 2"
-                }
-            };
-            
-            string result = template.Run(model: model);
+                var sw = new Stopwatch();
 
-            Console.WriteLine(result);
+                sw.Start();
+                
+                var template =
+                    await razorEngine.CompileAsync<RazorEngineCorePageModel>(SampleApp.Content.SampleContent);
+                
+                var model = new
+                {
+                    Name = "Alexander",
+                    Attribute = "<encode me>",
+                    Items = new List<string>()
+                    {
+                        "item 1",
+                        "item 2"
+                    }
+                };
+
+                await template.RunAsync(model: model);
+                
+                sw.Stop();
+
+                compileResults = compileResults.Add(sw.Elapsed);
+                
+                Console.WriteLine($"Compile :: {sw.Elapsed}");
+
+                sw.Restart();
+                
+                var resourceTemplate = await PrecompiledTemplate.LoadAsync("sample");
+
+                await resourceTemplate.RunAsync(model: model);
+                
+                sw.Stop();
+
+                precompileResults = precompileResults.Add(sw.Elapsed);
+                
+                Console.WriteLine($"Precompile :: {sw.Elapsed}");
+            }
+
+            Console.WriteLine($"Results of {runs} runs |");
+            Console.WriteLine($"\tCompile    | total: {compileResults}; average: {TimeSpan.FromMilliseconds(compileResults.TotalMilliseconds / runs)}");
+            
+            Console.WriteLine($"\tPrecompile | total: {precompileResults}; average: {TimeSpan.FromMilliseconds(precompileResults.TotalMilliseconds / runs)}");
+            
             Console.ReadKey();
         }
     }

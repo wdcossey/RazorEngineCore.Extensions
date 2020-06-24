@@ -1,0 +1,85 @@
+﻿@inherits RazorEngineCore.RazorEngineCorePageModel
+
+@{
+    var jsonObject = new
+    {
+        Title = "My Title", 
+        Description = "This is a description", 
+        Null = (object)null
+    };
+
+    Json.WriteIndented(true)
+        .IgnoreNullValues(true);
+}
+
+@RenderBody(Model)
+
+Hello @Model.Name
+
+@foreach(var item in @Model.Items)
+{
+    <div>- @item</div>
+}
+
+<div data-name="@Html.AttributeEncode(Model.Attribute)"></div>
+
+<div data-name="@(Model.Attribute)"></div>
+
+<div style="margin: 16px">
+    @@()
+    <code style="display: block">
+        @("<div>string</div>")    
+    </code>
+</div>
+
+<div style="margin: 16px">
+    @@Html.Encode()
+    <code style="display: block">
+        @Html.Encode("<div>string</div>")    
+    </code>
+</div>
+
+<div style="margin: 16px">
+    @@Html.AttributeEncode()
+    <code style="display: block">
+        @Html.AttributeEncode("<div>string</div>")
+    </code>
+</div>
+
+<div style="margin: 16px">
+    @@Html.Raw()
+    <code style="display: block">
+        @Html.Raw("<div>string</div>")    
+    </code>
+</div>
+
+<div style="margin: 16px">
+    @@Json.Serialize()
+    <code style="display: block">
+        @Json.Serialize(jsonObject)
+    </code>
+</div>
+
+<div style="margin: 16px">
+    @@Json.Serialize()
+    <code style="display: block">
+        @Json.Serialize(jsonObject, 
+            writeIndented: false,
+            ignoreNullValues: false)
+    </code>
+</div>
+
+<area>
+    @{ RecursionTest(3); }
+</area>
+
+@{
+    void RecursionTest(int level){
+        if (level <= 0)
+        {
+            return;
+        }
+        Html.Raw($"<div>LEVEL: {level}</div>");
+        RecursionTest(level - 1);
+    }
+}

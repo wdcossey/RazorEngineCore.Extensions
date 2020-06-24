@@ -2,34 +2,38 @@
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using RazorEngineCore.Writers;
+using RazorEngineCore.Writers.Interfaces;
 
 namespace RazorEngineCore
 {
     public abstract class RazorEngineCorePageModel : RazorEngineTemplateBase, IRazorEngineTemplate
     {
+        // ReSharper disable MemberCanBeMadeStatic.Global
+        // ReSharper disable MemberCanBePrivate.Global
+        // ReSharper disable MemberCanBeProtected.Global
+        // ReSharper disable UnusedMember.Global
+
+        public IHtmlContent BodyContent { get; set; }
+        
         private readonly TextWriter _textWriter = new StringWriter();
         
         private AttributeInfo _attributeInfo;
 
-        // ReSharper disable once MemberCanBePrivate.Global
         public HtmlEncoder HtmlEncoder => HtmlEncoder.Default;
-        
-        // ReSharper disable once UnusedMember.Global
-        public RazorEngineCoreHtmlWriter Html { get; } = new RazorEngineCoreHtmlWriter();
-        
-        // ReSharper disable once UnusedMember.Global
-        public RazorEngineCoreJsonWriter Json { get; } = new RazorEngineCoreJsonWriter();
 
-        // ReSharper disable once MemberCanBeProtected.Global
+        public IHtmlWriter Html { get; internal set; } = new HtmlWriter();
+        
+        public IJsonWriter Json { get; internal set; } = new JsonWriter();
+        
         public virtual void WriteLiteral(object value)
         {
-            
             if (value == null)
             {
                 return;
             }
 
-            this.WriteLiteral(value.ToString());
+            WriteLiteral(value.ToString());
         }
         
         public new void WriteLiteral(string value = null)
@@ -40,7 +44,6 @@ namespace RazorEngineCore
             }
         }
         
-        // ReSharper disable once MemberCanBePrivate.Global
         public void Write(string value)
         {
             var writer = _textWriter;
@@ -60,7 +63,7 @@ namespace RazorEngineCore
             {
                 return;
             }
-
+            
             var writer = _textWriter;
             var encoder = HtmlEncoder;
             if (value is IHtmlContent htmlContent)
@@ -91,6 +94,24 @@ namespace RazorEngineCore
             }
 
             Write(value.ToString());
+        }
+
+        protected virtual IHtmlContent RenderBody(object model)
+        {
+            if (BodyContent == null)
+            {
+                var engine = new RazorEngine();
+                var template = engine.Compile<RazorEngineCorePageModel>("@Model.Name");
+                
+                BodyContent = new HtmlString(template.RunAsync(model).Result);
+                
+                //var message = Resources.FormatRazorPage_MethodCannotBeCalled(nameof(RenderBody), Path);
+                //throw new InvalidOperationException(message);
+            }
+
+            //_renderedBody = true;
+            return BodyContent;
+            
         }
         
         public override void BeginWriteAttribute(string name, string prefix, int prefixOffset, string suffix, int suffixOffset, int attributeValuesCount)
@@ -169,13 +190,11 @@ namespace RazorEngineCore
             return this._textWriter.ToString();
         }
         
-        // ReSharper disable once MemberCanBeProtected.Global
         public virtual void BeginContext(int position, int length, bool isLiteral)
         {
             
         }
 
-        // ReSharper disable once MemberCanBeProtected.Global
         public virtual void EndContext()
         {
             
@@ -215,6 +234,11 @@ namespace RazorEngineCore
                 throw new InvalidOperationException(message);
             }*/
         }
+        
+        // ReSharper enable MemberCanBeMadeStatic.Global
+        // ReSharper enable MemberCanBePrivate.Global
+        // ReSharper enable MemberCanBeProtected.Global
+        // ReSharper enable UnusedMember.Global
         
         #region Private
         
@@ -270,6 +294,8 @@ namespace RazorEngineCore
         
         private struct AttributeInfo
         {
+            // ReSharper disable MemberCanBePrivate.Local
+
             public AttributeInfo(
                 string name,
                 string prefix,
@@ -297,10 +323,11 @@ namespace RazorEngineCore
             public int PrefixOffset { get; }
 
             public string Suffix { get; }
-
             public int SuffixOffset { get; }
 
             public bool Suppressed { get; set; }
+            
+            // ReSharper restore MemberCanBePrivate.Local
         }
         
         #endregion

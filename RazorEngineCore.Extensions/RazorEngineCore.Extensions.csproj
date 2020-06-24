@@ -1,5 +1,5 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>RazorEngineCore</RootNamespace>
@@ -15,9 +15,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="RazorEngineCore" Version="(2020.5.1,)" />
+      <PackageReference Include="RazorEngineCore" Version="2020.6.1" />
       <PackageReference Include="System.Text.Encodings.Web" Version="4.7.1" />
       <PackageReference Include="System.Text.Json" Version="4.7.2" />
     </ItemGroup>
-
+    
+    <ItemGroup>
+      <Folder Include="Attributes" />
+    </ItemGroup>
+    
 </Project>
