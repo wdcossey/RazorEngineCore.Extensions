@@ -8,6 +8,12 @@ namespace UnitTests
     // Useless bunch of tests!
     public class JsonWriterPropertyTests
     {
+        
+        private class MockRazorEngineCorePageModel : RazorEngineCorePageModel
+        {
+            
+        }
+        
         private RazorEngineCorePageModel _pageModel;
         private Mock<IJsonWriter> _mockJsonWriter;
 
@@ -16,7 +22,7 @@ namespace UnitTests
         {
             _mockJsonWriter = new Mock<IJsonWriter>();
 
-            _pageModel = new RazorEngineCorePageModel
+            _pageModel = new MockRazorEngineCorePageModel
             {
                 Json = _mockJsonWriter.Object
             };

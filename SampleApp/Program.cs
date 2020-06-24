@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using RazorEngineCore;
 
-[assembly: PrecompiledTemplate(typeof(RazorEngineCorePageModel), SampleApp.Content.SampleContent)]
-//RazorEngineCorePageModel
+[assembly: PrecompiledTemplate("sample", typeof(RazorEngineCorePageModel), SampleApp.Content.SampleContent)]
 
 namespace SampleApp
 {
@@ -100,63 +97,66 @@ Hello @Model.Name
 
     public class Program
     {
-        
-        
-        
         static async Task Main(string[] args)
         {
 
-            var dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            
-            
-            var assEx = Assembly.LoadFile($"{dir}{Path.DirectorySeparatorChar}RazorEngineCore.Extensions.dll");
-            var ass = Assembly.LoadFile($"{dir}{Path.DirectorySeparatorChar}RazorEngineCore.dll");
+            RazorEngine razorEngine = new RazorEngine();
 
-            ass.GetCustomAttributes<RazorEngineCore.PrecompiledTemplate>();
-            
-            var type = ass.GetType("RazorEngineCore.RazorEngine");
-            var templateType = ass.GetType("RazorEngineCore.RazorEngineCompiledTemplate");
-            
-            var instance = Activator.CreateInstance(type);
+            //Warm up CSharpCompilation, ensure fairness when doing a Stopwatch comparison
+            var mocktemplate =
+                await razorEngine.CompileAsync<RazorEngineCorePageModel>("");
 
-            //var method = instance.GetType().GetMethods().Single(w => w.IsGenericMethod && w.Name.Equals("CompileAsync"));//.MakeGenericMethod(typeof(RazorEngineCore.RazorEngineCorePageModel));
-            var method = type.GetMethods().Single(w => w.IsGenericMethod && w.Name.Equals("Compile"));//.MakeGenericMethod(typeof(RazorEngineCore.RazorEngineCorePageModel));
-
-            var tempType = typeof(RazorEngineCorePageModel);
+            var runs = 10;
             
-            var genericArgument = method.GetGenericArguments().FirstOrDefault();
-            if (genericArgument != null)
+            var compileResults = TimeSpan.Zero;
+            var precompileResults = TimeSpan.Zero;
+            
+            for (int i = 0; i < runs; i++)
             {
-                Type newType = tempType.MakeGenericType(genericArgument);
+                var sw = new Stopwatch();
+
+                sw.Start();
                 
-                method = method.MakeGenericMethod(templateType);
-            }
-            
-            //var method = instance.GetType().GetMethod($"CompileAsync<RazorEngineCore.RazorEngineCorePageModel>").MakeGenericMethod(typeof(RazorEngineCore.RazorEngineCorePageModel));
-
-
-            var x = method.Invoke(instance, new object[] {"Content.SampleContent", null});// as Task);
+                var template =
+                    await razorEngine.CompileAsync<RazorEngineCorePageModel>(SampleApp.Content.SampleContent);
                 
-            RazorEngineCore.RazorEngine razorEngine = new RazorEngineCore.RazorEngine();
-            
-            var template = razorEngine.Compile<RazorEngineCorePageModel>(Content.SampleContent);
-            
-            //var template = await razorEngine.CompileAsync<RazorEngineCorePageModel>(Content.SampleContent);
-
-            var model = new
-            {
-                Name = "Alexander",
-                Attribute = "<encode me>",
-                Items = new List<string>()
+                var model = new
                 {
-                    "item 1",
-                    "item 2"
-                }
-            };
-            
-            string result = await template.RunAsync(model: model);
+                    Name = "Alexander",
+                    Attribute = "<encode me>",
+                    Items = new List<string>()
+                    {
+                        "item 1",
+                        "item 2"
+                    }
+                };
 
-            Console.WriteLine(result);
+                await template.RunAsync(model: model);
+                
+                sw.Stop();
+
+                compileResults = compileResults.Add(sw.Elapsed);
+                
+                Console.WriteLine($"Compile :: {sw.Elapsed}");
+
+                sw.Restart();
+                
+                var resourceTemplate = await PrecompiledTemplate.LoadAsync("sample");
+
+                await resourceTemplate.RunAsync(model: model);
+                
+                sw.Stop();
+
+                precompileResults = precompileResults.Add(sw.Elapsed);
+                
+                Console.WriteLine($"Precompile :: {sw.Elapsed}");
+            }
+
+            Console.WriteLine($"Results of {runs} runs |");
+            Console.WriteLine($"\tCompile    | total: {compileResults}; average: {TimeSpan.FromMilliseconds(compileResults.TotalMilliseconds / runs)}");
+            
+            Console.WriteLine($"\tPrecompile | total: {precompileResults}; average: {TimeSpan.FromMilliseconds(precompileResults.TotalMilliseconds / runs)}");
+            
             Console.ReadKey();
         }
     }

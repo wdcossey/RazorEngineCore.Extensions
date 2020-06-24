@@ -29,7 +29,7 @@ namespace RazorEngineCore
         }
 
         private static Type GetReflectedTemplateType<TTemplate>(
-            this RazorEngineCompiledTemplate<TTemplate> compiledTemplate)
+            this IRazorEngineCompiledTemplate<TTemplate> compiledTemplate)
             where TTemplate : IRazorEngineTemplate
         {
             return ((object)compiledTemplate).GetReflectedTemplateType();
@@ -38,7 +38,7 @@ namespace RazorEngineCore
         // ReSharper disable MemberCanBePrivate.Global
         
         public static string Run<TTemplate>(
-            this RazorEngineCompiledTemplate<TTemplate> compiledTemplate, 
+            this IRazorEngineCompiledTemplate<TTemplate> compiledTemplate, 
             object model = null)
             where TTemplate : class, IRazorEngineTemplate
         {
@@ -46,7 +46,7 @@ namespace RazorEngineCore
         }
         
         public static async Task<string> RunAsync<TTemplate>(
-            this RazorEngineCompiledTemplate<TTemplate> compiledTemplate, 
+            this IRazorEngineCompiledTemplate<TTemplate> compiledTemplate, 
             object model = null)
             where TTemplate : class, IRazorEngineTemplate
         {
@@ -64,7 +64,7 @@ namespace RazorEngineCore
         }
         
         public static string Run<TTemplate, TModel>(
-            this RazorEngineCompiledTemplate<TTemplate> compiledTemplate,
+            this IRazorEngineCompiledTemplate<TTemplate> compiledTemplate,
             TModel model = default)
             where TModel : class
             where TTemplate : class, IRazorEngineTemplate
@@ -73,7 +73,7 @@ namespace RazorEngineCore
         }
 
         public static async Task<string> RunAsync<TTemplate, TModel>(
-            this RazorEngineCompiledTemplate<TTemplate> compiledTemplate, 
+            this IRazorEngineCompiledTemplate<TTemplate> compiledTemplate, 
             TModel model = default)
             where TModel : class
             where TTemplate : class, IRazorEngineTemplate

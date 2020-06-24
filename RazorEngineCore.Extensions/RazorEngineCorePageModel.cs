@@ -13,7 +13,7 @@ namespace RazorEngineCore
         // ReSharper disable MemberCanBePrivate.Global
         // ReSharper disable MemberCanBeProtected.Global
         // ReSharper disable UnusedMember.Global
-        
+
         public IHtmlContent BodyContent { get; set; }
         
         private readonly TextWriter _textWriter = new StringWriter();
