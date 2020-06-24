@@ -3,10 +3,18 @@
 # [RazorEngineCore](https://github.com/adoconnection/RazorEngineCore).Extensions
 Extensions for [RazorEngineCore](https://github.com/adoconnection/RazorEngineCore) (ASP.NET Core 3.1.1 Razor Template Engine)
 
-[![Build status](https://dev.azure.com/wdcossey/GitHub/_apis/build/status/RazorEngineCore-Extensions-CI?branchName=master)](https://dev.azure.com/wdcossey/GitHub/_build/latest?definitionId=1)
-[![Build status](https://badgen.net/nuget/v/RazorEngineCore.Extensions?icon=nuget)](https://www.nuget.org/packages/RazorEngineCore.Extensions/)
+[![Build status](https://dev.azure.com/wdcossey/GitHub/_apis/build/status/RazorEngineCore-Extensions-CI?branchName=master)](#)
+[![Nuget status](https://badgen.net/nuget/v/RazorEngineCore.Extensions?icon=nuget)](https://www.nuget.org/packages/RazorEngineCore.Extensions/)
 
 HTML (safe) encoded output by *default* using `RazorEngineCorePageModel` or `RazorEngineCorePageModel<T>`.
+
+# [RazorEngineCore](https://github.com/adoconnection/RazorEngineCore).Precompiler
+Template pre-compiler for [RazorEngineCore](https://github.com/adoconnection/RazorEngineCore).
+
+Compile your RazorEngineCore Templates when building your solution/project, thus compiling them during runtime.
+
+[![Build status](https://dev.azure.com/wdcossey/GitHub/_apis/build/status/RazorEngineCore-Precompiler?branchName=master)](#)
+[![Nuget status](https://badgen.net/nuget/v/RazorEngineCore.Precompiler?icon=nuget)](https://www.nuget.org/packages/RazorEngineCore.Precompiler/)
 
 ---
 
