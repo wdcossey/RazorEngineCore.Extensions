@@ -18,6 +18,24 @@ Compile your RazorEngineCore Templates when building your solution/project, thus
 
 ---
 
+`Precompiler` usage
+```
+\\Setup the template for the precompiler
+[assembly: PrecompiledTemplate("sample", typeof(RazorEngineCorePageModel), "@Model.Name")]
+
+\\Using the precompiled template
+var resourceTemplate = await PrecompiledTemplate.LoadAsync("sample");
+await resourceTemplate.RunAsync(model: someModel);
+
+```
+
+* The precompiler tool will run after a build.
+* Scanning the output assemblies for `PrecompiledTemplateAttribute`.
+* Build the templates and store them in a resource file named `RazorEngineCore.templates`.
+
+
+---
+
 Support for (some) `@Html` tags with custom `RazorEngineCoreHtmlWriter` (to reduce external dependencies)
 ```
 use: @("<div>string</div>")
