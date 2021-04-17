@@ -39,9 +39,7 @@ namespace RazorEngineCore
         public new void WriteLiteral(string value = null)
         {
             if (!string.IsNullOrEmpty(value))
-            {
                 _textWriter.Write(value);
-            }
         }
         
         public void Write(string value)
@@ -177,7 +175,7 @@ namespace RazorEngineCore
 
         public override void EndWriteAttribute()
         {
-            
+            WriteLiteral(_attributeInfo.Suffix);
         }
 
         public override Task ExecuteAsync()
