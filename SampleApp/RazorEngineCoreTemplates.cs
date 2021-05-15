@@ -1,0 +1,4 @@
+using RazorEngineCore;
+[assembly: RazorEngineCore.RazorEngineCoreTemplateAttribute(name: "Pages/PartialTemplate", templateType: typeof(RazorEngineCore.RazorEngineCorePageModel), fileName: @"Pages\PartialTemplate.cshtml", originalFileName: @"Pages\PartialTemplate.cshtml", compiled: false, embedded: false)]
+[assembly: RazorEngineCore.RazorEngineCoreTemplateAttribute(name: "Pages/Shared/_SharedTemplate", templateType: typeof(RazorEngineCore.RazorEngineCorePageModel), fileName: @"Pages\Shared\_SharedTemplate.cshtml", originalFileName: @"Pages\Shared\_SharedTemplate.cshtml", compiled: false, embedded: false)]
+[assembly: RazorEngineCore.RazorEngineCoreTemplateAttribute(name: "Pages/Template", templateType: typeof(RazorEngineCore.RazorEngineCorePageModel), fileName: @"Pages\Template.cshtml", originalFileName: @"Pages\Template.cshtml", compiled: false, embedded: false)]

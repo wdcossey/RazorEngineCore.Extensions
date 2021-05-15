@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using BindingFlags = System.Reflection.BindingFlags;
 
 // ReSharper disable once CheckNamespace
 namespace RazorEngineCore

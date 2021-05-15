@@ -1,0 +1,14 @@
+﻿@page
+@using Microsoft.AspNetCore.Antiforgery
+@model SampleWebApp.Partial
+@inject IAntiforgery antiforgery
+
+<div style="margin: 16px">
+    <code style="display: block">
+        hello world
+    </code>
+</div>
+
+<email mail-to="Black.Widow" asp-authpolicy="CanApproveBookingRequest"></email>
+
+<colorlabel color="red">the red color</colorlabel>

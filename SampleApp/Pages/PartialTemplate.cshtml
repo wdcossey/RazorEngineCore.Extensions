@@ -1,0 +1,5 @@
+﻿@inherits RazorEngineCore.RazorEngineCorePageModel
+
+Hello <b>@Model.Name</b>
+
+@(await Html.PartialAsync("_SharedTemplate", new { Name = "Shared Template"}))

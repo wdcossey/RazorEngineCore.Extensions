@@ -1,0 +1,110 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" TreatAsLocalProperty="RazorEngineCoreExtAssemblyFile">
+
+    <PropertyGroup>
+        <RazorEngineCoreExtDisable Condition=" '$(RazorEngineCoreExtDisable)' == '' ">False</RazorEngineCoreExtDisable>
+        <RazorEngineCoreExtBuildDirectory Condition=" '$(RazorEngineCoreExtBuildDirectory)' == '' ">razorenginecore.build</RazorEngineCoreExtBuildDirectory>
+        <RazorEngineCoreExtViewsDirectory Condition=" '$(RazorEngineCoreExtViewsDirectory)' == '' ">Pages</RazorEngineCoreExtViewsDirectory>
+        <!--<RazorEngineCore_OutputFile Condition=" '$(RazorEngineCore_OutputFile)' == '' ">RazorEngineCore.templates</RazorEngineCore_OutputFile>-->
+        <RazorEngineCoreExtEmbedResources Condition=" '$(RazorEngineCoreExtEmbedResources)' == '' ">True</RazorEngineCoreExtEmbedResources>
+        <RazorEngineCoreExtPrecompile Condition=" '$(RazorEngineCoreExtPrecompile)' == '' ">True</RazorEngineCoreExtPrecompile>
+        
+        <RazorEngineCoreExtAssemblyFile Condition=" '$(RazorEngineCoreExtAssemblyFile)' == '' ">$(MSBuildThisFileDirectory)..\..\tools\$(TargetFramework)\RazorEngineCore.Extensions.MSBuild.Tasks.dll</RazorEngineCoreExtAssemblyFile>
+        <RazorEngineCoreExtAssemblyFile Condition=" '$([System.IO.File]::Exists($(RazorEngineCoreExtAssemblyFile)))' == 'False' ">$(MSBuildThisFileDirectory)..\..\tools\any\RazorEngineCore.Extensions.MSBuild.Tasks.dll</RazorEngineCoreExtAssemblyFile>
+        
+    </PropertyGroup>
+    
+    <!--
+    AssemblyFile="$(MSBuildThisFileDirectory)..\..\tools\$(TargetFramework)\RazorEngineCore.Extensions.MSBuild.Tasks.dll" 
+    -->
+    <UsingTask
+            AssemblyFile="$(RazorEngineCoreExtAssemblyFile)"
+            TaskName="RazorEngineCoreCompiler" Condition=" '$(RazorEngineCoreExtDisable)' != 'True' " />
+    
+    <!--<UsingTask AssemblyFile="$(MSBuildThisFileDirectory)..\tools\RazorEngineCoreCompiler.MSBuild.Tasks.dll" TaskName="RazorEngineCoreCompiler" />-->
+
+    <Target Name="RazorEngineCore_Clean" BeforeTargets="BeforeClean">
+        <RemoveDir Directories="$(RazorEngineCoreExtBuildDirectory)" />
+    </Target>
+
+    <Target Name="RazorEngineCoreGeneration" BeforeTargets="PreBuildEvent">
+        <RemoveDir Directories="$(RazorEngineCoreExtBuildDirectory)\$(TargetFramework)" />
+        <RazorEngineCoreCompiler BuildDirectory="$(RazorEngineCoreExtBuildDirectory)" TargetFramework="$(TargetFramework)" ProjectDirectory="$(MSBuildProjectDirectory)" ViewsDirectory="$(RazorEngineCoreExtViewsDirectory)" EmbedResources="$(RazorEngineCoreExtEmbedResources)" Precompile="$(RazorEngineCoreExtPrecompile)" />
+    </Target>
+
+    <!-- RazorEngineCoreExtPrecompile = True -->
+    <!-- RazorEngineCoreExtEmbedResources = True -->
+    
+    <Target Name="RazorEngineCore_EmbeddedResource_Templates_Compiled" DependsOnTargets="RazorEngineCoreGeneration" AfterTargets="PrepareForBuild" Condition=" '$(RazorEngineCoreExtPrecompile)' == 'True' And '$(RazorEngineCoreExtEmbedResources)' == 'True' ">
+        <ItemGroup>
+            <CompiledRazorFiles Include="$(RazorEngineCoreExtBuildDirectory)\$(TargetFramework)\**\*.rzhtml;$(RazorEngineCoreExtBuildDirectory)\$(TargetFramework)\*.json" />
+        </ItemGroup>
+        <ItemGroup>
+            <EmbeddedResource Include="@(CompiledRazorFiles)">
+                <!--<Generator></Generator>
+                <SubType></SubType>-->
+                <!--<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>-->
+                <LinkBase>true</LinkBase>
+                <Visible>true</Visible>
+                <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+                <LogicalName>RazorEngineCore.$([System.String]::Copy('%(RecursiveDir)%(Filename)%(Extension)').Replace('\','_').Replace('/','_'))</LogicalName>
+            </EmbeddedResource>
+        </ItemGroup>
+    </Target>
+
+    <!-- RazorEngineCoreExtPrecompile = True -->
+    <!-- RazorEngineCoreExtEmbedResources = False -->
+    
+    <Target Name="RazorEngineCore_Content_Templates_Compiled" DependsOnTargets="RazorEngineCoreGeneration" BeforeTargets="PrepareForBuild" Condition=" '$(RazorEngineCoreExtPrecompile)' == 'True' And '$(RazorEngineCoreExtEmbedResources)' == 'False' ">
+        <ItemGroup>
+            <!-- ;$(RazorEngineCoreExtBuildDirectory)\$(TargetFramework)\*.json -->
+            <CompiledRazorFiles Include="$(RazorEngineCoreExtBuildDirectory)\$(TargetFramework)\$(RazorEngineCoreExtViewsDirectory)\**\*.rzhtml" />
+        </ItemGroup>
+
+        <ItemGroup>
+            <None Remove="@(CompiledRazorFiles)" />
+            <Content Include="@(CompiledRazorFiles)">
+                <Link>$(RazorEngineCoreExtViewsDirectory)\%(RecursiveDir)%(Filename)%(Extension)</Link>
+                <!--<Link>$(RazorEngineCoreExtViewsDirectory)\%(Filename)%(Extension)</Link>-->
+                <!--<DependentUpon>$(RazorEngineCoreExtViewsDirectory)\%(RecursiveDir)%(Filename).cshtml</DependentUpon>-->
+                <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            </Content>
+        </ItemGroup>
+    </Target>
+
+    <!-- RazorEngineCoreExtPrecompile = False -->
+    <!-- RazorEngineCoreExtEmbedResources = True -->
+
+    <Target Name="RazorEngineCore_EmbeddedResource_Templates_Raw" DependsOnTargets="RazorEngineCoreGeneration" AfterTargets="PrepareForBuild" Condition=" '$(RazorEngineCoreExtPrecompile)' == 'False' And '$(RazorEngineCoreExtEmbedResources)' == 'True' ">
+        <ItemGroup>
+            <RawRazorFiles Include="**\*.cshtml" />
+        </ItemGroup>
+        <ItemGroup>
+            <EmbeddedResource Include="@(RawRazorFiles)">
+                <!--<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>-->
+                <LinkBase>true</LinkBase>
+                <Visible>true</Visible>
+                <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+                <!-- .Replace('$([System.IO.Path]::DirectorySeparatorChar).ToString()','_') -->
+                <LogicalName>RazorEngineCore.$([System.String]::Copy('%(RecursiveDir)%(Filename)%(Extension)').Replace('\','_').Replace('/','_'))</LogicalName>
+            </EmbeddedResource>
+        </ItemGroup>
+    </Target>
+
+    <!-- RazorEngineCoreExtPrecompile = False -->
+    <!-- RazorEngineCoreExtEmbedResources = False -->
+    
+    <Target Name="RazorEngineCore_Content_Templates_Raw" DependsOnTargets="RazorEngineCoreGeneration" BeforeTargets="PrepareForBuild" Condition=" '$(RazorEngineCoreExtPrecompile)' == 'False' And '$(RazorEngineCoreExtEmbedResources)' == 'False' ">
+        <ItemGroup>
+            <RawRazorFiles Include="$(RazorEngineCoreExtViewsDirectory)\**\*.cshtml" />
+        </ItemGroup>
+
+        <ItemGroup>
+            <None Remove="@(RawRazorFiles)" />
+            <Content Include="@(RawRazorFiles)">
+                <Link>$(RazorEngineCoreExtViewsDirectory)\%(RecursiveDir)%(Filename)%(Extension)</Link>
+                <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            </Content>
+        </ItemGroup>
+    </Target>
+    
+</Project>

@@ -42,11 +42,11 @@ namespace RazorEngineCore
             object model = null)
             where TTemplate : class, IRazorEngineTemplate
         {
-            return compiledTemplate.RunAsync<TTemplate>(model).GetAwaiter().GetResult();
+            return compiledTemplate.RunAsync<TTemplate>(model: model).GetAwaiter().GetResult();
         }
         
         public static async Task<string> RunAsync<TTemplate>(
-            this IRazorEngineCompiledTemplate<TTemplate> compiledTemplate, 
+            this IRazorEngineCompiledTemplate<TTemplate> compiledTemplate,
             object model = null)
             where TTemplate : class, IRazorEngineTemplate
         {
@@ -69,7 +69,7 @@ namespace RazorEngineCore
             where TModel : class
             where TTemplate : class, IRazorEngineTemplate
         {
-            return compiledTemplate.RunAsync<TTemplate, TModel>(model).GetAwaiter().GetResult();
+            return compiledTemplate.RunAsync<TTemplate, TModel>(model: model).GetAwaiter().GetResult();
         }
 
         public static async Task<string> RunAsync<TTemplate, TModel>(

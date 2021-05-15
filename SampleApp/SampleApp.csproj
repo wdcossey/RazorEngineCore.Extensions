@@ -2,54 +2,21 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>default</LangVersion>
+        
+        <!--<RazorEngineCoreExtBuildDirectory>obj\_RazorEngineCore\$(Configuration)</RazorEngineCoreExtBuildDirectory>-->
+        <RazorEngineCoreExtEmbedResources>False</RazorEngineCoreExtEmbedResources>
+        <RazorEngineCoreExtPrecompile>False</RazorEngineCoreExtPrecompile>
+
+        <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RazorEngineCore.Extensions\RazorEngineCore.Extensions.csproj" />
+      <PackageReference Include="RazorEngineCore.Extensions" Version="*-*" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="RazorEngineCore.Precompiler" Version="0.1.4" />
+      <Folder Include="razorenginecore.build" />
     </ItemGroup>
 
-    <ItemGroup>
-      <None Update="Template.cshtml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
-    <!--<UsingTask TaskName="HandleAssemblyResolve" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildBinPath)\Microsoft.Build.Tasks.Core.dll">
-    <UsingTask TaskName="RazorEngineCore.SimpleTask" AssemblyFile="$(TargetDir)RazorEngineCore.Extensions.dll">
-    </UsingTask>
-
-    <Target Name="RazorEngineCoreAfterBuild" AfterTargets="Build">
-        <RazorEngineCore.SimpleTask ExtensionsAssembly="RazorEngineCore.Extensions.dll" TargetDir="$(TargetDir)" TargetFileName="$(TargetFileName)" />
-    </Target>-->
-    
-<!--
-    <Target Name="Thank" AfterTargets="Build">
-        <SayThankYou />
-    </Target>
-    
-    <Target Name="RazorEngineCoreAfterBuild" AfterTargets="Build">
-      <SimpleTask ExtensionsAssembly="RazorEngineCore.Extensions.dll" TargetDir="$(TargetDir)" TargetFileName="$(TargetFileName)" />
-    </Target>
--->
-<!--
-        <Target Name="RazorEngineCorePrecompile" AfterTargets="Build">
-            <Exec Command="dotnet C:\\Users\\wdcos\\RiderProjects\\RazorEngineCore.Extensions\\RazorEngineCore.Precompiler\\bin\\Debug\\netcoreapp3.1\\RazorEngineCore.Precompiler.dll $(TargetDir)" />
-        </Target>
-        -->    
-<!--    <Target Name="HelloWorld" BeforeTargets="Build">
-        <Message Text="Compile item type contains @(Compile, '%0A%0D')" />
-    </Target>
-
-    <Target Name="GenerateSomeFiles" BeforeTargets="BeforeBuild">
-        <Message Text="Compile item type contains @(Compile, '%0A%0D')" />
-        <ItemGroup>
-            <Compile Include="**/*$(DefaultLanguageSourceExtension)" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(BaseIntermediateOutputPath)**;$(BaseOutputPath)**;@(Compile)" />
-        </ItemGroup>
-    </Target>-->
-    
 </Project>

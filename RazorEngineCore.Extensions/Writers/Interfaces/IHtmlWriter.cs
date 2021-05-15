@@ -1,4 +1,7 @@
-﻿namespace RazorEngineCore.Writers.Interfaces
+﻿using System;
+using System.Threading.Tasks;
+
+namespace RazorEngineCore.Writers.Interfaces
 {
     /// <summary>
     /// Lightweight implementation of the IHtmlHelper from ASP.Net Core.
@@ -18,5 +21,15 @@
         string Encode(string value);
         
         string Encode(object value);
+
+        public IHtmlContent Partial(
+            string partialViewName,
+            object model = null /*,
+            ViewDataDictionary viewData*/);
+
+        public Task<IHtmlContent> PartialAsync(
+            string partialViewName,
+            object model = null /*,
+            ViewDataDictionary viewData*/);
     }
 }

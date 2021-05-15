@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>RazorEngineCore</RootNamespace>
         <LangVersion>8</LangVersion>
         <Title>RazorEngineCore.Extensions</Title>
@@ -12,16 +11,29 @@
         <PackageIconUrl>https://github.com/wdcossey/RazorEngineCore.Extensions/raw/master/Assets/razor.png</PackageIconUrl>
         <RepositoryUrl>https://github.com/wdcossey/RazorEngineCore.Extensions</RepositoryUrl>
         <PackageTags>RazorEngineCore, RazorEngine</PackageTags>
+        <TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.0;netstandard2.1</TargetFrameworks>
     </PropertyGroup>
+    
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'netstandard2.1' ">
+        <PackageReference Include="System.Text.Encodings.Web" Version="5.0.0" />
+        <PackageReference Include="System.Text.Json" Version="5.0.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' Or '$(TargetFramework)' == 'netstandard2.0' ">
+        <PackageReference Include="System.Text.Encodings.Web" Version="4.7.2" />
+        <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="RazorEngineCore" Version="2020.6.1" />
-      <PackageReference Include="System.Text.Encodings.Web" Version="4.7.1" />
-      <PackageReference Include="System.Text.Json" Version="4.7.2" />
+      <Folder Include="Attributes" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+        <PackageReference Include="RazorEngineCore" Version="2021.3.1" />
     </ItemGroup>
     
-    <ItemGroup>
-      <Folder Include="Attributes" />
+    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <ProjectReference Include="..\.submodules\RazorEngineCore\RazorEngineCore\RazorEngineCore.csproj" />
     </ItemGroup>
     
 </Project>

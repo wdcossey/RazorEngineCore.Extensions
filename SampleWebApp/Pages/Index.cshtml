@@ -1,4 +1,5 @@
 ﻿@page
+@using Microsoft.Extensions.Logging
 @model IndexModel
 
 @{
@@ -37,5 +38,12 @@
     @@Json.Serialize()
     <code style="display: block">
         @Json.Serialize(new { Title = "My Title", Description = "This is a description" })
+    </code>
+</div>
+
+<div style="margin: 16px">
+    @@Html.PartialAsync()
+    <code style="display: block">
+        @(await Html.PartialAsync("Partial", new Partial()))
     </code>
 </div>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace RazorEngineCore
@@ -37,6 +38,11 @@ namespace RazorEngineCore
         /// <inheritdoc />
         public void WriteTo(TextWriter writer, HtmlEncoder encoder)
         {
+            WriteToAsync(writer: writer, encoder: encoder).GetAwaiter().GetResult();
+        }
+
+        public Task WriteToAsync(TextWriter writer, HtmlEncoder encoder)
+        {
             if (writer == null)
             {
                 throw new ArgumentNullException(nameof(writer));
@@ -47,7 +53,7 @@ namespace RazorEngineCore
                 throw new ArgumentNullException(nameof(encoder));
             }
 
-            writer.Write(Value);
+            return writer.WriteAsync(Value);
         }
 
         /// <inheritdoc />

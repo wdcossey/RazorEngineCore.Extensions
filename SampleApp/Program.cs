@@ -1,26 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using RazorEngineCore;
 
-[assembly: PrecompiledTemplate("sample", typeof(RazorEngineCorePageModel), SampleApp.Content.SampleContent)]
+[assembly: RazorEngineCoreTemplate("Pages/ContentTemplate", typeof(RazorEngineCorePageModel), fileName: "Pages\\ContentTemplate.cshtml", content: SampleApp.Content.SampleContent)]
 
 namespace SampleApp
 {
 
     public static class Content
     {
-        public const string SampleContent = @"      
-
+        public const string SampleContent = @"
 @{
+    /* Layout = ""_Layout""; */
+
     var jsonObject = new { Title = ""My Title"", Description = ""This is a description"", Null = (object)null };
 
     Json.WriteIndented(true)
         .IgnoreNullValues(true);
 }
 
-@RenderBody(Model)
+@*@RenderBody()*@
 
 Hello @Model.Name
 
@@ -32,6 +34,8 @@ Hello @Model.Name
 <div data-name=""@Html.AttributeEncode(Model.Attribute)""></div>
 
 <div data-name=""@(Model.Attribute)""></div>
+
+<img href='@(""test"")'>
 
 <div style=""margin: 16px"">
     @@()
@@ -82,16 +86,54 @@ Hello @Model.Name
 </area>
 
 @{
-	void RecursionTest(int level){
-		if (level <= 0)
-		{
-			return;
-		}
-			
-		<div>LEVEL: @level</div>
-		@{ RecursionTest(level - 1); }
-	}
+    void RecursionTest(int level){
+        if (level <= 0)
+        {
+            return;
+        }
+            
+        <div>LEVEL: @level</div>
+        @{ RecursionTest(level - 1); }
+    }
 }
+
+@(await Html.PartialAsync(""StaticPartialTemplate"", new { Name = ""Partial Template""}))
+        
+";
+
+        public const string PartialContent = @"
+Hello <b>@Model.Name</b>
+
+@(await Html.PartialAsync(""Shared/_StaticSharedTemplate"", new { Name = ""Shared Template""}))
+";
+
+        public const string SharedContent = @"
+Hello <b>@Model.Name</b>
+";
+
+        public const string LayoutContent = @"
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+
+</head>
+<body>
+<header>
+    
+</header>
+<div>
+    <main>
+        @*@RenderBody()*@
+        @(await Html.PartialAsync(""StaticBody""))
+    </main>
+</div>
+
+<footer>
+    
+</footer>
+
+</body>
+</html>
 ";
     }
 
@@ -99,7 +141,13 @@ Hello @Model.Name
     {
         static async Task Main(string[] args)
         {
+            
+            //ResourceReader res = new ResourceReader(@".\RazorEngineCore.templates");
+            //res.GetResourceData("razorenginecore", out var resourceType, out var resourceData);
 
+            //var x = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(
+            //    System.Text.Encoding.Unicode.GetString(resourceData, 4, resourceData.Length - 4));
+                
             RazorEngine razorEngine = new RazorEngine();
 
             //Warm up CSharpCompilation, ensure fairness when doing a Stopwatch comparison
@@ -118,7 +166,7 @@ Hello @Model.Name
                 sw.Start();
                 
                 var template =
-                    await razorEngine.CompileAsync<RazorEngineCorePageModel>(SampleApp.Content.SampleContent);
+                    await razorEngine.CompileAsync<RazorEngineCorePageModel>(SampleApp.Content.LayoutContent);
                 
                 var model = new
                 {
@@ -131,25 +179,31 @@ Hello @Model.Name
                     }
                 };
 
-                await template.RunAsync(model: model);
+                ViewsManager.TryAdd("Pages/StaticBody", SampleApp.Content.SampleContent);
+                ViewsManager.TryAdd("Pages/StaticPartialTemplate", SampleApp.Content.PartialContent);
+                ViewsManager.TryAdd("Pages/Shared/_StaticSharedTemplate", SampleApp.Content.SharedContent);
+                    
+                var output = await template.RunAsync(model: model);
                 
                 sw.Stop();
 
                 compileResults = compileResults.Add(sw.Elapsed);
                 
-                Console.WriteLine($"Compile :: {sw.Elapsed}");
+                Console.WriteLine($"Runtime Compile :: {sw.Elapsed}");
 
                 sw.Restart();
                 
-                var resourceTemplate = await PrecompiledTemplate.LoadAsync("sample");
+                var resourceTemplate = await PrecompiledTemplate.LoadAsync("Template", Assembly.GetExecutingAssembly());
 
-                await resourceTemplate.RunAsync(model: model);
+                output = await resourceTemplate.RunAsync(model: model);
+                
+                //Console.WriteLine($"Precompiled :: \n\n{output}");
                 
                 sw.Stop();
 
                 precompileResults = precompileResults.Add(sw.Elapsed);
                 
-                Console.WriteLine($"Precompile :: {sw.Elapsed}");
+                Console.WriteLine($"Precompiled :: {sw.Elapsed}");
             }
 
             Console.WriteLine($"Results of {runs} runs |");

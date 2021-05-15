@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using RazorEngineCore.Writers.Interfaces;
 
 namespace RazorEngineCore
 {
-    public abstract class RazorEngineCorePageModel : RazorEngineTemplateBase, IRazorEngineTemplate
+    public abstract class RazorEngineCorePageModel : RazorEngineTemplateBase, IRazorEngineCorePageModel
     {
         // ReSharper disable MemberCanBeMadeStatic.Global
         // ReSharper disable MemberCanBePrivate.Global
@@ -22,9 +23,21 @@ namespace RazorEngineCore
 
         public HtmlEncoder HtmlEncoder => HtmlEncoder.Default;
 
-        public IHtmlWriter Html { get; internal set; } = new HtmlWriter();
+        public IHtmlWriter Html { get; internal set; }
         
-        public IJsonWriter Json { get; internal set; } = new JsonWriter();
+        public IJsonWriter Json { get; internal set; }
+
+        #region Layout
+
+        //public string Layout { get; set; }
+
+        #endregion
+        
+        public RazorEngineCorePageModel()
+        {
+            Html = new HtmlWriter(this);
+            Json = new JsonWriter();
+        }
         
         public virtual void WriteLiteral(object value)
         {
@@ -44,15 +57,13 @@ namespace RazorEngineCore
         
         public void Write(string value)
         {
-            var writer = _textWriter;
-            var encoder = HtmlEncoder;
-            if (!string.IsNullOrEmpty(value))
-            {
-                // Perf: Encode right away instead of writing it character-by-character.
-                // character-by-character isn't efficient when using a writer backed by a ViewBuffer.
-                var encoded = encoder.Encode(value);
-                writer.Write(encoded);
-            }
+            if (string.IsNullOrEmpty(value)) 
+                return;
+            
+            // Perf: Encode right away instead of writing it character-by-character.
+            // character-by-character isn't efficient when using a writer backed by a ViewBuffer.
+            var encoded = HtmlEncoder.Encode(value);
+            _textWriter.Write(encoded);
         }
 
         public override void Write(object value = null)
@@ -62,15 +73,13 @@ namespace RazorEngineCore
                 return;
             }
             
-            var writer = _textWriter;
-            var encoder = HtmlEncoder;
             if (value is IHtmlContent htmlContent)
             {
                 //TODO: ViewBufferTextWriter is not currently supported.
                 //var bufferedWriter = writer as ViewBufferTextWriter;
                 //if (bufferedWriter == null || !bufferedWriter.IsBuffering)
                 //{
-                    htmlContent.WriteTo(writer, encoder);
+                    htmlContent.WriteTo(_textWriter, HtmlEncoder);
                 //}
                 //else
                 //{
@@ -94,23 +103,23 @@ namespace RazorEngineCore
             Write(value.ToString());
         }
 
+        //TODO: Add RenderBody()
+        [Obsolete("This is incomplete!")]
         protected virtual IHtmlContent RenderBody(object model)
         {
-            if (BodyContent == null)
+            /*if (BodyContent != null)
             {
                 var engine = new RazorEngine();
                 var template = engine.Compile<RazorEngineCorePageModel>("@Model.Name");
-                
-                BodyContent = new HtmlString(template.RunAsync(model).Result);
-                
-                //var message = Resources.FormatRazorPage_MethodCannotBeCalled(nameof(RenderBody), Path);
-                //throw new InvalidOperationException(message);
-            }
+                BodyContent = new HtmlString(template.RunAsync(model).GetAwaiter().GetResult());
+            }*/
 
             //_renderedBody = true;
             return BodyContent;
             
         }
+        
+        #region Attribute
         
         public override void BeginWriteAttribute(string name, string prefix, int prefixOffset, string suffix, int suffixOffset, int attributeValuesCount)
         {
@@ -177,7 +186,9 @@ namespace RazorEngineCore
         {
             WriteLiteral(_attributeInfo.Suffix);
         }
-
+        
+        #endregion
+        
         public override Task ExecuteAsync()
         {
             return base.ExecuteAsync();
@@ -187,7 +198,9 @@ namespace RazorEngineCore
         {
             return this._textWriter.ToString();
         }
-        
+
+        #region Context
+
         public virtual void BeginContext(int position, int length, bool isLiteral)
         {
             
@@ -197,6 +210,8 @@ namespace RazorEngineCore
         {
             
         }
+
+        #endregion
         
         public virtual void EnsureRenderedBodyOrSections()
         {

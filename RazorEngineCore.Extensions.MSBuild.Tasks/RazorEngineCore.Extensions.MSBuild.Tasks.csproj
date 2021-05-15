@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>RazorEngineCoreCompiler.MSBuild</RootNamespace>
+        <LangVersion>default</LangVersion>
+        <!-- Suppresses the warnings about the package not having assemblies in lib/*/.dll.-->
+        <!--<NoPackageAnalysis>true</NoPackageAnalysis>-->
+        <!-- Change the default location where NuGet will put the build output -->
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+        <TargetFrameworks>net5.0;netcoreapp3.1</TargetFrameworks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Ben.Demystifier" Version="0.3.0" />
+      <PackageReference Include="Microsoft.Build.Framework" Version="16.9.0" />
+      <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.9.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="build\RazorEngineCore.MSBuild.targets" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\RazorEngineCore.Extensions\RazorEngineCore.Extensions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="build\net5.0" />
+      <Folder Include="build\netcoreapp3.1" />
+    </ItemGroup>
+
+</Project>
