@@ -19,11 +19,11 @@ Compile your RazorEngineCore Templates when building your solution/project, thus
 ---
 
 `Precompiler` usage
-```
-\\Setup the template for the precompiler
+```c#
+// Setup the template for the precompiler
 [assembly: PrecompiledTemplate("sample", typeof(RazorEngineCorePageModel), "@Model.Name")]
 
-\\Using the precompiled template
+// Using the precompiled template
 var resourceTemplate = await PrecompiledTemplate.LoadAsync("sample");
 await resourceTemplate.RunAsync(model: someModel);
 
